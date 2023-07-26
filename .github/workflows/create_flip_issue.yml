@@ -1,0 +1,45 @@
+name: Create Issue on New File
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+  push:
+    branches:
+      - main
+
+jobs:
+  check_files_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: List modified files
+        run: |
+          git diff --name-only ${{ github.event.before }}..${{ github.event.after }} | grep -E "^\d{8}-.*\.md$" | tee file_list.txt
+
+      - name: Create Issue
+        if: steps.check_files_job.outputs.file-list != ''
+        run: |
+          echo "Found new files: "
+          cat file_list.txt
+          echo "Creating a new issue for the detected file(s)."
+          cat file_list.txt | while read -r filename; do
+            echo "New file detected: $filename"
+            # You can customize the issue title and body here
+            title="New file created: $filename"
+            body="A new file has been added in the pull request with the name: $filename"
+            echo "::set-output name=title::$title"
+            echo "::set-output name=body::$body"
+          done
+
+      - name: Open Issue
+        if: steps.create_issue.outputs.title != '' && steps.create_issue.outputs.body != ''
+        uses: peter-evans/create-issue-from-file@v2
+        with:
+          title: ${{ steps.create_issue.outputs.title }}
+          body: ${{ steps.create_issue.outputs.body }}
+          labels: 'auto-generated, pull-request'
