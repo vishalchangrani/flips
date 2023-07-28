@@ -5,9 +5,8 @@ on:
     types:
       - opened
       - reopened
-  push:
     branches:
-      - main
+      - 'main'
 
 jobs:
   check_files_job:
