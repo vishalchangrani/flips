@@ -23,7 +23,7 @@ jobs:
 
       - name: List modified files
         run: |
-          git diff --name-only ${{ github.event.before }}..${{ github.event.after }} | grep -E "^\d{8}-.*\.md$" | tee file_list.txt
+          git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -E "^\d{8}-.*\.md$" | tee file_list.txt
 
       - name: Create Issue
         if: steps.check_files_job.outputs.file-list != ''
