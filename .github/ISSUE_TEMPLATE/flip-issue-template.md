@@ -2,9 +2,8 @@
 name: FLIP issue template
 about: Template for an issue created to track a FLIP
 title: ''
-labels: Proposed
+labels: 'flip: application, Proposed'
 assignees: ''
-projects: 'vishalchangrani/1'
 
 ---
 
